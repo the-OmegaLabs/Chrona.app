@@ -76,11 +76,12 @@ class Application:
             theme_description = maliang.Text(theme_label, position=(self.getScaled(65), self.getScaled(36)), text='Choose the theme of the app.', family=self.UI_FAMILY, fontsize=self.getScaled(14))
             theme_description.style.set(fg=('#A0A0A0'))
 
-            theme_menu = maliang.OptionButton(theme_label, position=(theme_label.size[0] - self.getScaled(20), theme_label.size[1] // 2), anchor='e', family=self.UI_FAMILY, fontsize=self.getScaled(15), text=['Light', 'Dark', 'System'], default=2)
+            theme_menu = maliang.SegmentedButton(theme_label, layout='horizontal', position=(theme_label.size[0] - self.getScaled(20), theme_label.size[1] // 2), anchor='e', family=self.UI_FAMILY, fontsize=self.getScaled(15), text=['Light', 'Dark', 'System'], default=2)
             #theme_menu.style.set(bg=['#2B2B2B', '#2B2B2B'])
+            theme_menu.style.set(bg=['#343434', '#343434'])
 
-            #for item in theme_menu.children: 
-            #    item.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
+            for item in theme_menu.children: 
+                item.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
 
 
         self.WDG_content.destroy()
