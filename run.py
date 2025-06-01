@@ -1,6 +1,8 @@
+import os
 import sys
 import importlib.machinery
 import importlib.util
+import traceback
 import Frameworks.Logger as Logger
 from dataclasses import dataclass
 
@@ -49,6 +51,21 @@ class AppRuntime():
         self.target = self.getApp()
 
 
+    def traceback(self, exception: Exception):
+        os.makedirs('dumps', exist_ok=True)
+            
+        tracelist = ''.join(traceback.format_exception(exception)).split('\n')
+
+        try:
+            for i in tracelist[:-1]:
+                Logger.output(i, type=Logger.Type.ERROR)
+        except:
+            for i in tracelist[:-1]:
+                print(f'FAIL: {i}')
+
 if __name__ == "__main__":
-    runtime = AppRuntime()
-    runtime.target.Application(runtime.config)
+    try:
+        runtime = AppRuntime()
+        runtime.target.Application(runtime.config)
+    except Exception as e:
+        runtime.traceback(e)
