@@ -11,7 +11,7 @@ class Configuation:
 
     IS_LOWGPU    = False           # disable animation
     UI_SCALE     = 1               # scale of UI
-    UI_FPS       = 200             # animation fps
+    UI_FPS       = 500             # animation fps
     UI_THEME     = 'dark' 
     UI_LOCALE    = 'zh'    
     UI_ANIMATIME = 500

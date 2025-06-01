@@ -1,7 +1,9 @@
 import Frameworks.Logger as Logger
 import Frameworks.Utils as Utils
 from PIL import Image  
+
 import maliang
+import maliang.animation
 
 class Application:
     def getScaled(self, number: float) -> int:
@@ -77,15 +79,15 @@ class Application:
             theme_description.style.set(fg=('#A0A0A0'))
 
             theme_menu = maliang.SegmentedButton(theme_label, layout='horizontal', position=(theme_label.size[0] - self.getScaled(20), theme_label.size[1] // 2), anchor='e', family=self.UI_FAMILY, fontsize=self.getScaled(15), text=['Light', 'Dark', 'System'], default=2)
+            
             #theme_menu.style.set(bg=['#2B2B2B', '#2B2B2B'])
             theme_menu.style.set(bg=['#343434', '#343434'])
 
             for item in theme_menu.children: 
                 item.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
 
-
         self.WDG_content.destroy()
-
+        
         self.WDG_content = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(-5)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
         self.WDG_content.style.set(ol=('', ''), bg=('#272727', '#272727'))
 
@@ -103,6 +105,10 @@ class Application:
             maliang.Tooltip(item, text=self.APP_menulist_text[i], align='right', family=self.UI_FAMILY, fontsize=self.getScaled(15))
 
         maliang.Tooltip(self.WDG_setting_button, text='Settings', align='right', family=self.UI_FAMILY, fontsize=self.getScaled(15))
+
+        maliang.animation.MoveWidget(self.WDG_content, offset=(0, self.getScaled(200)), duration=0, controller=maliang.animation.ease_out, fps=self.UI_FPS).start()
+        maliang.animation.MoveWidget(self.WDG_content, offset=(0, self.getScaled(-200)), duration=int(self.UI_ANIMATIME ), controller=maliang.animation.ease_out, fps=self.UI_FPS).start()
+
 
     def loadWidget(self):
         self.APP_sidebar_width = self.getScaled(45)
@@ -135,6 +141,8 @@ class Application:
         self.WDG_setting_button = maliang.ToggleButton(self.cv, position=(self.APP_sidebar_width // 2, self.UI_HEIGHT - self.WDG_menubar.children[0].size[0] // 2 - self.getScaled(7)), anchor='center', size=self.WDG_menubar.children[0].size, command=lambda _: self.changePage(4))
         self.WDG_setting_button.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
         
+        self.bg = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(0)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
+
         maliang.Image(self.WDG_setting_button, position=(0, self.getScaled(1)), anchor='center', image=(maliang.PhotoImage(self.IMG_setting.resize((self.getScaled(30), self.getScaled(30)), 1))))    
         
         self.changePage(4)
