@@ -1,3 +1,4 @@
+import sys
 import Frameworks.Logger as Logger
 import Frameworks.Utils as Utils
 from PIL import Image  
@@ -40,16 +41,21 @@ class Application:
         self.root.mainloop()
 
     def loadImage(self):
-        self.IMG_icon = Image.open('./Resources/icon.png')
-        
-        self.IMG_sona = Image.open('./Resources/sona.png')
-        self.IMG_alarm = Image.open('./Resources/alarm.png')
-        self.IMG_timer = Image.open('./Resources/timer.png')
-        self.IMG_stopwatch = Image.open('./Resources/stopwatch.png')
-        self.IMG_setting = Image.open('./Resources/settings.png')
-        self.IMG_theme = Image.open('./Resources/theme.png')
+        try:
+            self.IMG_icon = Image.open('./Resources/icon.png')
+            
+            self.IMG_sona = Image.open('./Resources/sona.png')
+            self.IMG_alarm = Image.open('./Resources/alarm.png')
+            self.IMG_timer = Image.open('./Resources/timer.png')
+            self.IMG_stopwatch = Image.open('./Resources/stopwatch.png')  
+            self.IMG_setting = Image.open('./Resources/settings.png')
+            self.IMG_theme = Image.open('./Resources/theme.png')
+            self.IMG_notify = Image.open('./Resources/notify.png')
 
-        self.APP_menuicon = [self.IMG_sona, self.IMG_timer, self.IMG_alarm, self.IMG_stopwatch]
+            self.APP_menuicon = [self.IMG_sona, self.IMG_timer, self.IMG_alarm, self.IMG_stopwatch]
+        except Exception as e:
+            Logger.output(f"Error loading images: {e}", type=Logger.Type.ERROR)
+            sys.exit()
 
     def createWindow(self):
         self.root = maliang.Tk(size=(self.UI_WIDTH, self.UI_HEIGHT))
@@ -70,25 +76,29 @@ class Application:
             content_start_at = self.getScaled(55)
             title = maliang.Text(self.WDG_content, position=(content_start_at, self.getScaled(30)), text='Settings', family=self.UI_FAMILY, fontsize=self.getScaled(40), weight='bold')
 
-            maliang.Text(self.WDG_content, position=(content_start_at, self.getScaled(140)), text='General', family=self.UI_FAMILY, fontsize=self.getScaled(17), weight='bold')
+            general = maliang.Text(self.WDG_content, position=(content_start_at, self.getScaled(140)), text='General', family=self.UI_FAMILY, fontsize=self.getScaled(17), weight='bold')
 
             theme_label = maliang.Label(self.WDG_content, position=(content_start_at, self.getScaled(175)), size=(self.WDG_content.size[0] - content_start_at * 2, self.getScaled(70)), family=self.UI_FAMILY, fontsize=self.getScaled(17), weight='bold')
-            theme_label.style.set(ol=('#233232', '#233232'), bg=('#323232', '#393939'))
-            
+            theme_label.style.set(ol=('#233232', '#233232'), bg=('#323232', '#393939'))            
             theme_icon = maliang.Image(theme_label, position=(self.getScaled(70) // 2, self.getScaled(70) // 2 + self.getScaled(2)), anchor='center', image=(maliang.PhotoImage(self.IMG_theme.resize((self.getScaled(45), self.getScaled(45)), 1))))
-
             theme_title = maliang.Text(theme_label, position=(self.getScaled(65), self.getScaled(15)), text='App theme', family=self.UI_FAMILY, fontsize=self.getScaled(15))
-
             theme_description = maliang.Text(theme_label, position=(self.getScaled(65), self.getScaled(36)), text='Choose the theme of the app.', family=self.UI_FAMILY, fontsize=self.getScaled(14))
             theme_description.style.set(fg=('#A0A0A0'))
-
             theme_menu = maliang.SegmentedButton(theme_label, layout='horizontal', position=(theme_label.size[0] - self.getScaled(20), theme_label.size[1] // 2), anchor='e', family=self.UI_FAMILY, fontsize=self.getScaled(15), text=['Light', 'Dark', 'System'], default=2)
-            
-            #theme_menu.style.set(bg=['#2B2B2B', '#2B2B2B'])
             theme_menu.style.set(bg=['#343434', '#343434'])
-
             for item in theme_menu.children: 
                 item.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
+
+            notify_label = maliang.Label(self.WDG_content, position=(content_start_at, self.getScaled(250)), size=(self.WDG_content.size[0] - content_start_at * 2, self.getScaled(70)), family=self.UI_FAMILY, fontsize=self.getScaled(17), weight='bold')
+            notify_label.style.set(ol=('#233232', '#233232'), bg=('#323232', '#393939'))            
+            notify_icon = maliang.Image(notify_label, position=(self.getScaled(70) // 2, self.getScaled(70) // 2 + self.getScaled(0)), anchor='center', image=(maliang.PhotoImage(self.IMG_notify.resize((self.getScaled(45), self.getScaled(45)), 1))))
+            notify_title = maliang.Text(notify_label, position=(self.getScaled(65), self.getScaled(15)), text='Notifications', family=self.UI_FAMILY, fontsize=self.getScaled(15))
+            notify_description = maliang.Text(notify_label, position=(self.getScaled(65), self.getScaled(36)), text='Modify your notification settings.', family=self.UI_FAMILY, fontsize=self.getScaled(14))
+            notify_description.style.set(fg=('#A0A0A0'))
+            
+            notify_managedBySysText = maliang.Text(notify_label, anchor='e', position=(notify_label.size[0] - self.getScaled(20), notify_label.size[1] // 2), text='Managed by Desktop Bus', family=self.UI_FAMILY, fontsize=self.getScaled(15))
+            notify_managedBySysText.style.set(fg=('#A0A0A0'))
+
 
         self.WDG_content.destroy()
         del self.WDG_content       # fix mem leak
