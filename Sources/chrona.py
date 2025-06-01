@@ -2,6 +2,8 @@ import Frameworks.Logger as Logger
 import Frameworks.Utils as Utils
 from PIL import Image  
 
+import gc
+
 import maliang
 import maliang.animation
 
@@ -87,6 +89,7 @@ class Application:
                 item.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
 
         self.WDG_content.destroy()
+        gc.collect()
         
         self.WDG_content = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(-5)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
         self.WDG_content.style.set(ol=('', ''), bg=('#272727', '#272727'))
@@ -128,7 +131,7 @@ class Application:
             'Stopwatch'
         ]
 
-        self.WDG_content = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(-5)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
+        self.WDG_content = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(-10)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
         self.WDG_content.style.set(ol=('', ''), bg=('#272727', '#272727'))
 
         self.WDG_menubar = maliang.SegmentedButton(self.cv, position=(self.getScaled(1), self.getScaled(5)), layout='vertical', family=self.UI_FAMILY, fontsize=self.getScaled(15), text=self.APP_menulist, command=self.changePage, default=0)
@@ -142,6 +145,7 @@ class Application:
         self.WDG_setting_button.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
         
         self.bg = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(0)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
+        self.bg.style.set(ol=('', ''), bg=('#272727', '#272727'))
 
         maliang.Image(self.WDG_setting_button, position=(0, self.getScaled(1)), anchor='center', image=(maliang.PhotoImage(self.IMG_setting.resize((self.getScaled(30), self.getScaled(30)), 1))))    
         
