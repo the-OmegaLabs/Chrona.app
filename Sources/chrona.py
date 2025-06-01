@@ -35,6 +35,8 @@ class Application:
         self.createWindow()
         self.loadWidget()
 
+        gc.enable()
+
         self.root.mainloop()
 
     def loadImage(self):
@@ -89,6 +91,7 @@ class Application:
                 item.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
 
         self.WDG_content.destroy()
+        del self.WDG_content       # fix mem leak
         gc.collect()
         
         self.WDG_content = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(-5)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
