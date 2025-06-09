@@ -2,4 +2,4 @@ maliang[opt]
 colorama
 lunardate
 wheel
-playsound
+playsound==1.2.2
