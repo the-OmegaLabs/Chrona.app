@@ -3,8 +3,6 @@ import Frameworks.Logger as Logger
 import Frameworks.Utils as Utils
 from PIL import Image  
 
-import gc
-
 import maliang
 import maliang.animation
 
@@ -36,7 +34,6 @@ class Application:
         self.createWindow()
         self.loadWidget()
 
-        gc.enable()
 
         self.root.mainloop()
 
