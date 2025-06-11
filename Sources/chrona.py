@@ -30,7 +30,7 @@ class Application:
 
         self.SET_MUTE     = args.SET_MUTE
         
-        self.utils        = Utils.Utils(self)
+        self.WDGS_tooltip = []
 
         self.loadImage()
         self.createWindow()
@@ -72,21 +72,68 @@ class Application:
         # maliang.Env.system = 'Windows10'
 
     def changePage(self, i):
-        def settingPage(self):
+        if i > 3:
+            self.WDG_menubar.set(5)
+            self.WDG_setting_button.set(True)
+        else:
+            self.WDG_menubar.set(i)
+            self.WDG_setting_button.set(False)
+
+        if i == 0:
+            self.WDG_content_sona.lift()
+        if i == 1:
+            self.WDG_content_timer.lift()
+        if i == 2:
+            self.WDG_content_alarm.lift()
+        if i == 3:
+            self.WDG_content_stopwatch.lift()
+        if i == 4:
+            self.WDG_content_settings.lift()
+
+        for widget in self.WDGS_tooltip:
+            widget.lift()
+
+        maliang.animation.MoveWidget(self.WDG_content_settings, offset=(0, self.getScaled(200)), duration=0, controller=maliang.animation.ease_out, fps=self.UI_FPS).start()
+        maliang.animation.MoveWidget(self.WDG_content_settings, offset=(0, self.getScaled(-200)), duration=int(self.UI_ANIMATIME ), controller=maliang.animation.ease_out, fps=self.UI_FPS).start()
+
+
+    def loadWidget(self):
+        def generateMenubar():
+            self.WDG_menubar = maliang.SegmentedButton(self.cv, position=(self.getScaled(1), self.getScaled(5)), layout='vertical', family=self.UI_FAMILY, fontsize=self.getScaled(15), text=self.APP_menulist, command=self.changePage, default=0)
+            self.WDG_menubar.style.set(bg=('', ''), ol=('', ''))
+
+            for i, item in enumerate(self.WDG_menubar.children): 
+                maliang.Image(item, position=(item.size[1] // 2, item.size[1] // 2 + self.getScaled(1)), anchor='center', image=(maliang.PhotoImage(self.APP_menuicon[i].resize((self.getScaled(30), self.getScaled(30)), 1))))
+                item.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
+
+            self.WDG_setting_button = maliang.ToggleButton(self.cv, position=(self.APP_sidebar_width // 2, self.UI_HEIGHT - self.WDG_menubar.children[0].size[0] // 2 - self.getScaled(7)), anchor='center', size=self.WDG_menubar.children[0].size, command=lambda _: self.changePage(4))
+            self.WDG_setting_button.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
+
+            maliang.Image(self.WDG_setting_button, position=(0, self.getScaled(1)), anchor='center', image=(maliang.PhotoImage(self.IMG_setting.resize((self.getScaled(30), self.getScaled(30)), 1))))    
+
+            for i, item in enumerate(self.WDG_menubar.children): 
+                self.WDGS_tooltip.append(maliang.Tooltip(item, text=self.APP_menulist_text[i], align='right', family=self.UI_FAMILY, fontsize=self.getScaled(15)))
+
+            self.WDGS_tooltip.append(maliang.Tooltip(self.WDG_setting_button, text='Settings', align='right', family=self.UI_FAMILY, fontsize=self.getScaled(15)))
+
+        def generateSettingsPage():
             content_start_at = self.getScaled(55)
-            title = maliang.Text(self.WDG_content, position=(content_start_at, self.getScaled(30)), text='Settings', family=self.UI_FAMILY, fontsize=self.getScaled(40), weight='bold')
+            title = maliang.Text(self.WDG_content_settings, position=(content_start_at, self.getScaled(30)), text='Settings', family=self.UI_FAMILY, fontsize=self.getScaled(40), weight='bold')
 
-            general = maliang.Text(self.WDG_content, position=(content_start_at, self.getScaled(140)), text='General', family=self.UI_FAMILY, fontsize=self.getScaled(17), weight='bold')
+            general = maliang.Text(self.WDG_content_settings, position=(content_start_at, self.getScaled(140)), text='General', family=self.UI_FAMILY, fontsize=self.getScaled(17), weight='bold')
 
-            theme_label = maliang.Label(self.WDG_content, position=(content_start_at, self.getScaled(175)), size=(self.WDG_content.size[0] - content_start_at * 2, self.getScaled(70)), family=self.UI_FAMILY, fontsize=self.getScaled(17), weight='bold')
+            theme_label = maliang.Label(self.WDG_content_settings, position=(content_start_at, self.getScaled(175)), size=(self.WDG_content_settings.size[0] - content_start_at * 2, self.getScaled(70)), family=self.UI_FAMILY, fontsize=self.getScaled(17), weight='bold')
             theme_label.style.set(ol=('#233232', '#233232'), bg=('#323232', '#393939'))            
             theme_icon = maliang.Image(theme_label, position=(self.getScaled(70) // 2, self.getScaled(70) // 2 + self.getScaled(2)), anchor='center', image=(maliang.PhotoImage(self.IMG_theme.resize((self.getScaled(45), self.getScaled(45)), 1))))
             theme_title = maliang.Text(theme_label, position=(self.getScaled(65), self.getScaled(15)), text='App theme', family=self.UI_FAMILY, fontsize=self.getScaled(15))
             theme_description = maliang.Text(theme_label, position=(self.getScaled(65), self.getScaled(36)), text='Choose the theme of the app.', family=self.UI_FAMILY, fontsize=self.getScaled(14))
             theme_description.style.set(fg=('#A0A0A0'))
-            theme_menu = maliang.OptionButton(theme_label, position=(theme_label.size[0] - self.getScaled(20), theme_label.size[1] // 2), anchor='e', family=self.UI_FAMILY, fontsize=self.getScaled(15), text=['Light', 'Dark', 'System'], default=2)
+            theme_menu = maliang.SegmentedButton(theme_label, layout='horizontal', position=(theme_label.size[0] - self.getScaled(20), theme_label.size[1] // 2), anchor='e', family=self.UI_FAMILY, fontsize=self.getScaled(15), text=['Light', 'Dark', 'System'], default=2)
+            theme_menu.style.set(bg=['#343434', '#343434'])
+            for item in theme_menu.children: 
+                item.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
 
-            notify_label = maliang.Label(self.WDG_content, position=(content_start_at, self.getScaled(250)), size=(self.WDG_content.size[0] - content_start_at * 2, self.getScaled(70)), family=self.UI_FAMILY, fontsize=self.getScaled(17), weight='bold')
+            notify_label = maliang.Label(self.WDG_content_settings, position=(content_start_at, self.getScaled(250)), size=(self.WDG_content_settings.size[0] - content_start_at * 2, self.getScaled(70)), family=self.UI_FAMILY, fontsize=self.getScaled(17), weight='bold')
             notify_label.style.set(ol=('#233232', '#233232'), bg=('#323232', '#393939'))            
             notify_icon = maliang.Image(notify_label, position=(self.getScaled(70) // 2, self.getScaled(70) // 2 + self.getScaled(0)), anchor='center', image=(maliang.PhotoImage(self.IMG_notify.resize((self.getScaled(45), self.getScaled(45)), 1))))
             notify_title = maliang.Text(notify_label, position=(self.getScaled(65), self.getScaled(15)), text='Notifications', family=self.UI_FAMILY, fontsize=self.getScaled(15))
@@ -96,36 +143,7 @@ class Application:
             notify_managedBySysText = maliang.Text(notify_label, anchor='e', position=(notify_label.size[0] - self.getScaled(20), notify_label.size[1] // 2), text='Managed by Desktop Bus', family=self.UI_FAMILY, fontsize=self.getScaled(15))
             notify_managedBySysText.style.set(fg=('#A0A0A0'))
 
-
-        self.WDG_content.destroy()
-        del self.WDG_content       # fix mem leak
-        gc.collect()
-        
-        self.WDG_content = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(-5)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
-        self.WDG_content.style.set(ol=('', ''), bg=('#272727', '#272727'))
-
-        if i > 3:
-            self.WDG_menubar.set(5)
-            self.WDG_setting_button.set(True)
-        else:
-            self.WDG_menubar.set(i)
-            self.WDG_setting_button.set(False)
-
-        if i == 4:
-            settingPage(self)
-
-        for i, item in enumerate(self.WDG_menubar.children): 
-            maliang.Tooltip(item, text=self.APP_menulist_text[i], align='right', family=self.UI_FAMILY, fontsize=self.getScaled(15))
-
-        maliang.Tooltip(self.WDG_setting_button, text='Settings', align='right', family=self.UI_FAMILY, fontsize=self.getScaled(15))
-
-        maliang.animation.MoveWidget(self.WDG_content, offset=(0, self.getScaled(200)), duration=0, controller=maliang.animation.ease_out, fps=self.UI_FPS).start()
-        maliang.animation.MoveWidget(self.WDG_content, offset=(0, self.getScaled(-200)), duration=int(self.UI_ANIMATIME ), controller=maliang.animation.ease_out, fps=self.UI_FPS).start()
-
-
-    def loadWidget(self):
         self.APP_sidebar_width = self.getScaled(45)
-
 
         self.APP_menulist = [
             ' ' * 5,
@@ -141,22 +159,23 @@ class Application:
             'Stopwatch'
         ]
 
-        self.WDG_content = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(-10)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
-        self.WDG_content.style.set(ol=('', ''), bg=('#272727', '#272727'))
-
-        self.WDG_menubar = maliang.SegmentedButton(self.cv, position=(self.getScaled(1), self.getScaled(5)), layout='vertical', family=self.UI_FAMILY, fontsize=self.getScaled(15), text=self.APP_menulist, command=self.changePage, default=0)
-        self.WDG_menubar.style.set(bg=('', ''), ol=('', ''))
-
-        for i, item in enumerate(self.WDG_menubar.children): 
-            maliang.Image(item, position=(item.size[1] // 2, item.size[1] // 2 + self.getScaled(1)), anchor='center', image=(maliang.PhotoImage(self.APP_menuicon[i].resize((self.getScaled(30), self.getScaled(30)), 1))))
-            item.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
-
-        self.WDG_setting_button = maliang.ToggleButton(self.cv, position=(self.APP_sidebar_width // 2, self.UI_HEIGHT - self.WDG_menubar.children[0].size[0] // 2 - self.getScaled(7)), anchor='center', size=self.WDG_menubar.children[0].size, command=lambda _: self.changePage(4))
-        self.WDG_setting_button.style.set(ol=('', '', '', '', '', ''), bg=('', '#292929', '#292929', '#2D2D2D', '#292929', '#2D2D2D'))
-        
+        generateMenubar()
+                
         self.bg = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(0)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
         self.bg.style.set(ol=('', ''), bg=('#272727', '#272727'))
-
-        maliang.Image(self.WDG_setting_button, position=(0, self.getScaled(1)), anchor='center', image=(maliang.PhotoImage(self.IMG_setting.resize((self.getScaled(30), self.getScaled(30)), 1))))    
         
+        self.WDG_content_sona      = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(-5)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
+        self.WDG_content_timer     = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(-5)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
+        self.WDG_content_alarm     = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(-5)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
+        self.WDG_content_stopwatch = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(-5)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
+        self.WDG_content_settings  = maliang.Label(self.cv, position=(self.APP_sidebar_width, self.getScaled(-5)), size=(self.UI_WIDTH - self.APP_sidebar_width, self.UI_HEIGHT + self.getScaled(10)))
+
+        self.WDG_content_sona      .style.set(ol=('', ''), bg=('#272727', '#272727'))
+        self.WDG_content_timer     .style.set(ol=('', ''), bg=('#272727', '#272727'))
+        self.WDG_content_alarm     .style.set(ol=('', ''), bg=('#272727', '#272727'))
+        self.WDG_content_stopwatch .style.set(ol=('', ''), bg=('#272727', '#272727'))
+        self.WDG_content_settings  .style.set(ol=('', ''), bg=('#272727', '#272727'))
+            
+        generateSettingsPage()
+
         self.changePage(4)

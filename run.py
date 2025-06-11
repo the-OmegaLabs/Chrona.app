@@ -1,29 +1,28 @@
-import os
 import sys
 import importlib.machinery
 import importlib.util
-import traceback
 import Frameworks.Logger as Logger
 from dataclasses import dataclass
+import traceback
 
 @dataclass
 class Configuation:
     IS_DEVMODE   = True             
-    APP_PATH     = 'Sources/chrona.py'    # fallback path
+    APP_PATH     = 'Sources/Chrona.py'    # fallback path
 
     IS_LOWGPU    = False           # disable animation
     UI_SCALE     = 1               # scale of UI
     UI_FPS       = 500             # animation fps
     UI_THEME     = 'dark' 
     UI_LOCALE    = 'zh'    
-    UI_ANIMATIME = 500
+    UI_ANIMATIME = 500 
     UI_FAMILY    = '源流黑体 CJK'
     SET_USER     = 'root'
-    SET_UID      = 1000
-    SET_MUTE     = False           # disable sound play
+    SET_UID      = 0
+    SET_MUTE     = False
 
 class AppRuntime():
-    def getApp(self):
+    def loadApp(self):
         if sys.argv[-1].endswith('.py'):
             spec = importlib.util.spec_from_file_location("loaded_module", self.config.APP_PATH)
             module = importlib.util.module_from_spec(spec)
@@ -48,24 +47,23 @@ class AppRuntime():
         if self.config.IS_LOWGPU:
             self.config.UI_ANIMATIME = 0
 
-        self.target = self.getApp()
+        self.target = self.loadApp()
 
 
-    def traceback(self, exception: Exception):
-        os.makedirs('dumps', exist_ok=True)
-            
-        tracelist = ''.join(traceback.format_exception(exception)).split('\n')
+def tracebackProcess(exception: Exception):
+    tracelist = ''.join(traceback.format_exception(exception)).split('\n')
 
-        try:
-            for i in tracelist[:-1]:
-                Logger.output(i, type=Logger.Type.ERROR)
-        except:
-            for i in tracelist[:-1]:
-                print(f'FAIL: {i}')
+    try:
+        for i in tracelist[:-1]:
+            Logger.output(i, type=Logger.Type.ERROR)
+    except:
+        for i in tracelist[:-1]:
+            print(f'FAIL: {i}')
 
 if __name__ == "__main__":
     try:
         runtime = AppRuntime()
         runtime.target.Application(runtime.config)
     except Exception as e:
-        runtime.traceback(e)
+        tracebackProcess(e)
+        

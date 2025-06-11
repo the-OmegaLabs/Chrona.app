@@ -2,7 +2,7 @@ import datetime
 import sys
 import threading
 from lunardate import LunarDate
-import playsound
+import datetime
 from PIL import (
     Image, 
     ImageFilter, 

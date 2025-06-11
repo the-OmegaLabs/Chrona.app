@@ -1,6 +1,101 @@
-initProject.py
-__pycache__
 
-bulid
-dist
+########################
+    
+
+
+########################
+
+# Project
+initProject.py
 *.log
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+*.pyc
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# pipenv
+Pipfile.lock
+
+# Poetry
+poetry.lock
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# Pytest
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython history
+.history
+
+# PyInstaller
+# Usually these files are written by a python script from a template
+*.manifest
+*.spec
+build
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# Unit test / coverage reports
+.tox/
+.nox/
+
+# Editor
+.vscode/
+.idea/
+
+# Darwin
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# dotenv
+.env
+.env.*
+
+# SQLite
+*.sqlite3
+
+# Editor backups
+*~
+*.swp
+*.swo

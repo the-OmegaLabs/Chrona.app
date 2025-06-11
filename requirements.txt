@@ -1,5 +1,8 @@
-maliang[opt]
+
+cpuinfo
+psutil
 colorama
 lunardate
 wheel
+setuptools
 playsound==1.2.2
